@@ -3,17 +3,22 @@ import pygame, sys, time, random
 from pygame.locals import *
 from StreamThread import * 
 
-pygame.init()
 width = 500
 height = 700
 play_surface = pygame.display.set_mode((width, height))
 fps = pygame.time.Clock()
 jugador = pygame.image.load("Assets/Tiburoncin.png")
-fondo = pygame.image.load("Assets/fondoAgua.png")
+fondo = pygame.image.load("Assets/Fondo3.png")
 tuboArriba = pygame.image.load("Assets/TuboArriba.png")
 tuboAbajo = pygame.image.load("Assets/TuboAbajo.png")
 fondoMenu = pygame.image.load("Assets/fondoMenu.png")
 fondoGameOver = pygame.image.load("Assets/fondoGameOver.png")
+
+pygame.init()
+pygame.mixer.init()
+
+pygame.display.set_icon(jugador)
+
 
 def pipe_random_height():
     pipe_h = [random.randint(200, (height/2)-60), random.randint((height/2)+60, height-200)]
@@ -27,9 +32,12 @@ class App:
         
     def Menu(self):
         global play_surface
-
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load('Musica/Menu.mp3')
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.5)
         while True:
-            pygame.display.set_caption("Menu")
+            pygame.display.set_caption("Sharky")
             play_surface.blit(fondoMenu, (0,0))
             
             # menu_mouse_pos = pygame.mouse.get_pos()
@@ -56,8 +64,12 @@ class App:
     def GameOver(self, score):
         global play_surface
 
+        pygame.mixer.music.load('Musica/GameOver.mp3')
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.5)
+
         while True:
-            pygame.display.set_caption("Game Over")
+            pygame.display.set_caption("Sharky")
             # play_surface.blit(fondoMenu, (0,0))
             play_surface.blit(fondoGameOver, [0,0])
             
@@ -85,9 +97,13 @@ class App:
 
     def main(self):
         global app
-        
+        pygame.display.set_caption("Sharky")
+        pygame.mixer.music.stop()
+
         score = 0
         player_pos = [50,350]
+
+        fondo_pos = [0,0]
 
         pipe_pos = 700
         pipe_widht = 50
@@ -99,8 +115,11 @@ class App:
         self.stream_thread.start()
         run = True
 
+
         #Main Loop
         while run:
+
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -109,6 +128,10 @@ class App:
                 # if event.type == pygame.KEYDOWN:
                 #     if event.key == pygame.K_SPACE:
                 #         speed += jump
+            fondo_pos[0] = fondo_pos[0] - 2
+            if fondo_pos[0] <= - 2580:
+                fondo_pos[0] = 0
+
             if pipe_pos >= -100:
                 pipe_pos -= 10
             else:
@@ -118,7 +141,7 @@ class App:
             
             #Fondo
             # play_surface.fill((0,0,0))
-            play_surface.blit(fondo, [0,0])
+            play_surface.blit(fondo, fondo_pos)
 
             
             if (self.comprobar_color):
@@ -152,7 +175,7 @@ class App:
 
             #PUNTUACION
             play_text = get_font(15).render(f"Puntuacion {score}", True, "#ffffff")
-            play_rect = play_text.get_rect(center=(350, 50))
+            play_rect = play_text.get_rect(center=(400, 20))
             
             play_surface.blit(play_text, play_rect)
             
