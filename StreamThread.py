@@ -22,12 +22,12 @@ class StreamThread(Thread):
         frecuencias = np.fft.rfftfreq(len(data), periodo_muestreo)
         frecuencia_fundamental = frecuencias[np.argmax(np.abs(transformada))]
 
-        # print("Frecuencia Fundamental: ", frecuencia_fundamental)
+        print("Frecuencia Fundamental: ", frecuencia_fundamental)
 
         if frecuencia_fundamental > 200:
-            self.app.comprobar_color = True
+            self.app.comprobar_movimiento = True
         if frecuencia_fundamental < 200:
-            self.app.comprobar_color = False
+            self.app.comprobar_movimiento = False
 
         # if frecuencia_fundamental > 595 and frecuencia_fundamental < 605:
         #     print("Pintar la nave de rojo")

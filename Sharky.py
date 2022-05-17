@@ -14,6 +14,14 @@ tuboAbajo = pygame.image.load("Assets/TuboAbajo.png")
 fondoMenu = pygame.image.load("Assets/fondoMenu.png")
 fondoGameOver = pygame.image.load("Assets/fondoGameOver.png")
 
+jugadorAnimado = [pygame.image.load("Assets/Tiburoncin1.png"),
+                  pygame.image.load("Assets/Tiburoncin.png"),
+                  pygame.image.load("Assets/Tiburoncin2.png"),
+                  pygame.image.load("Assets/Tiburoncin.png"),]
+
+cuentaPasos=0
+
+
 pygame.init()
 pygame.mixer.init()
 
@@ -28,7 +36,7 @@ def get_font(size):
     return pygame.font.Font("8-BIT-WONDER.TTF", size)
 
 class App:
-    comprobar_color = False
+    comprobar_movimiento = False
         
     def Menu(self):
         global play_surface
@@ -40,17 +48,7 @@ class App:
             pygame.display.set_caption("Sharky")
             play_surface.blit(fondoMenu, (0,0))
             
-            # menu_mouse_pos = pygame.mouse.get_pos()
-            # menu_text = get_font(35).render("Flappy Sharky", True, "#ffffff")
-            # menu_rect = menu_text.get_rect(center=(250, 100))
-            
-            # play_surface.blit(menu_text, menu_rect)
-
-            # play_text = get_font(15).render("Da clic para comenzar", True, "#ffffff")
-            # play_rect = menu_text.get_rect(center=(320, 350))
-            
-            # play_surface.blit(menu_text, menu_rect)
-            # play_surface.blit(play_text, play_rect)
+        
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -97,6 +95,8 @@ class App:
 
     def main(self):
         global app
+        global cuentaPasos
+
         pygame.display.set_caption("Sharky")
         pygame.mixer.music.stop()
 
@@ -144,13 +144,18 @@ class App:
             play_surface.blit(fondo, fondo_pos)
 
             
-            if (self.comprobar_color):
+            if (self.comprobar_movimiento):
                 player_pos[1] -= 10
             else: 
                 player_pos[1] += 10
 
             #TIBURON
-            play_surface.blit(jugador, (int(player_pos[0]), int(player_pos[1])))
+            if cuentaPasos +1 >= 5:
+                cuentaPasos = 0
+
+
+            play_surface.blit(jugadorAnimado[cuentaPasos], (int(player_pos[0]), int(player_pos[1])))
+            cuentaPasos = cuentaPasos + 1
 
             #TUBERIAS
             play_surface.blit(tuboArriba, [pipe_pos - 50, pipe_height[0]- 330, pipe_widht, pipe_height[0]])
